@@ -31,18 +31,18 @@ void BufferedWriter::add_char(uint8_t x) {
     if (cur_size == BUFFER_SIZE) {
         write_buffer();
     }
-//    buff[cur_size++] = x;
-    if (rest == 0) {
-        buff[cur_size++] = x;
-    } else {
-        size_t k = rest;
-        cur_char <<= k;
-        cur_char += (x >> (8 - k));
-        rest = 0;
-        add_char(cur_char);
-        cur_char = static_cast<uint8_t>(x & ((1 << (8 - k)) - 1));
-        rest = k;
-    }
+   buff[cur_size++] = x;
+//    if (rest == 0) {
+//        buff[cur_size++] = x;
+//    } else {
+//        size_t k = rest;
+//        cur_char <<= k;
+//        cur_char += (x >> (8 - k));
+//        rest = 0;
+//        add_char(cur_char);
+//        cur_char = static_cast<uint8_t>(x & ((1 << (8 - k)) - 1));
+//        rest = k;
+//    }
 }
 
 void BufferedWriter::add_short(uint16_t x) {
@@ -66,24 +66,30 @@ void BufferedWriter::add_code(Code const &code) {
     size_t rest = code.get_rest();
 
     for (size_t i = 0; i + 1 < data.size(); i++) {
-        add_int(data[i]);
+        add(data[i], 32);
     }
-    size_t size = 32 - rest;
-    while (size >= 8) {
-        add_char(static_cast<uint8_t>(data.back() >> (size - 8)));
-        data.back() &= ((1 << (size - 8)) - 1);
-        size -= 8;
-    }
-
-    for (size_t i = 0; i < size; i++) {
-        add_bit(static_cast<bool>(data.back() & (1 << (size - i - 1))));
-    }
+    add(data.back(), 32 - rest);
+//    size_t size = 32 - rest;
+//    while (size >= 8) {
+//        add_char(static_cast<uint8_t>(data.back() >> (size - 8)));
+//        data.back() &= ((1 << (size - 8)) - 1);
+//        size -= 8;
+//    }
+//
+//    for (size_t i = 0; i < size; i++) {
+//        add_bit(static_cast<bool>(data.back() & (1 << (size - i - 1))));
+//    }
 //    for (size_t i = 0; i < code.size(); i++) {
 //        add_bit(code.get(i));
 //    }
 }
 
 void BufferedWriter::check_last() {
+    for (size_t i = 0; i < cur_buff_size; i++) {
+        add_bit(static_cast<bool>(cur_buff & (1 << (cur_buff_size - i - 1))));
+    }
+    cur_buff = 0;
+    cur_buff_size = 0;
     size_t cnt = rest;
     if (rest != 8) {
         for (size_t i = 0; i < cnt; i++) {
@@ -94,8 +100,23 @@ void BufferedWriter::check_last() {
     }
     add_char(static_cast<uint8_t>(8 - cnt));
     write_buffer();
+//    end();
 }
 
 void BufferedWriter::end() {
+//    for (size_t i = 0; i < cur_buff_size; i++) {
+//        add_bit(static_cast<bool>(cur_buff & (1 << (cur_buff_size - i - 1))));
+//    }
     write_buffer();
+}
+
+void BufferedWriter::add(uint32_t x, size_t size) {
+    cur_buff <<= size;
+    cur_buff |= x;
+    cur_buff_size += size;
+    if (cur_buff_size >= 32) {
+        add_int(static_cast<uint32_t>(cur_buff >> (cur_buff_size - 32)));
+        cur_buff &= ((1 << 31) - 1);
+        cur_buff_size -= 32;
+    }
 }

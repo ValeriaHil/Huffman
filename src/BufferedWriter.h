@@ -18,6 +18,7 @@ struct BufferedWriter {
     void add_char(uint8_t x);
     void add_short(uint16_t x);
     void add_int(uint32_t x);
+    void add(uint32_t x, size_t size);
     void add_code(Code const &code);
     void add_vector(std::vector<uint32_t> const &data);
     void check_last();
@@ -30,6 +31,8 @@ private:
     size_t rest = 8;
     uint8_t cur_char = 0;
     std::ofstream fout;
+    uint64_t cur_buff = 0;
+    size_t cur_buff_size = 0;
 
     void write_buffer();
 };
