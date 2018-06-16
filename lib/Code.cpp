@@ -55,7 +55,7 @@ void Code::add(Code &code) {
     }
 }
 
-std::vector<uint32_t> Code::get_data()const {
+std::vector<uint32_t> const & Code::get_data()const {
     return data;
 }
 

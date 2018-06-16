@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <queue>
+#include <array>
 #include "Code.h"
 
 struct Huffman {

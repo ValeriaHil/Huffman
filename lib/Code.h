@@ -19,7 +19,7 @@ struct Code {
     size_t size() const;
     bool get(size_t ind) const;
     size_t get_rest()const;
-    std::vector<uint32_t> get_data() const;
+    std::vector<uint32_t> const &get_data() const;
 
 private:
     std::vector<uint32_t> data;
