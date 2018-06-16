@@ -15,6 +15,8 @@ struct Huffman {
 
     Code &encode(uint8_t const &x);
 
+    std::vector<uint8_t> decode(char cur, size_t size);
+
 private:
     struct Node {
         std::shared_ptr<Node> left;
@@ -27,7 +29,7 @@ private:
         Node(uint8_t c, uint64_t cnt) : left(nullptr), right(nullptr), data(c), cnt(cnt) {}
 
         Node(uint64_t cnt, std::shared_ptr<Node> const &l, std::shared_ptr<Node> const &r) : left(l), right(r),
-                                                                              data(0), cnt(cnt) {}
+                                                                                             data(0), cnt(cnt) {}
 
         inline bool is_leaf() {
             return left == right && left == nullptr;
@@ -53,7 +55,6 @@ private:
 
     std::shared_ptr<Node> cur_node;
 
-public:
     void start();
 
     void go(bool b);

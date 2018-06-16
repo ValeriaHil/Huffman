@@ -2,7 +2,7 @@
 // Created by valeriahil on 05.06.18.
 //
 
-#include "Code.h"
+#include "../include/huffman/Code.h"
 
 Code::Code() : data(0), rest(0) {}
 

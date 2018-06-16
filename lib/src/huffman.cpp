@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "huffman.h"
+#include "../include/huffman/huffman.h"
 
 Huffman::Huffman(std::array<uint64_t, 256> const &list_of_cnt) {
     for (size_t i = 0; i < 256; i++) {
@@ -80,9 +80,9 @@ Huffman::Huffman(std::array<Code, 256> const &codes) {
                 v = v->left;
             }
         }
-
         v->data = i;
     }
+    start();
 }
 
 Code &Huffman::encode(uint8_t const &x) {
@@ -112,5 +112,25 @@ uint8_t Huffman::get_char() {
 
 std::shared_ptr<Huffman::Node> Huffman::get_cur_node() {
     return cur_node;
+}
+
+std::vector<uint8_t> Huffman::decode(char cur, size_t size) {
+    std::vector<uint8_t> res;
+
+    for (size_t i = 0; i < size; i++) {
+        auto b = static_cast<bool>(cur & (1 << (8 - i - 1)));
+        go(b);
+
+        if (get_cur_node() == nullptr) {
+            throw std::runtime_error("error");
+        }
+
+        if (is_ready()) {
+            res.push_back(get_char());
+//            writer.add_char(get_char());
+            start();
+        }
+    }
+    return res;
 }
 

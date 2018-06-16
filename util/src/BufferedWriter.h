@@ -8,7 +8,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "../lib/Code.h"
+#include "huffman/Code.h"
 
 struct BufferedWriter {
     explicit BufferedWriter(std::string const &file);
@@ -20,6 +20,7 @@ struct BufferedWriter {
     void add_int(uint32_t x);
     void add(uint32_t x, size_t size);
     void add_code(Code const &code);
+    void add_vector(std::vector<uint8_t> const &data);
     void add_vector(std::vector<uint32_t> const &data);
     void check_last();
     void end();

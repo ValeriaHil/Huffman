@@ -5,7 +5,7 @@
 #include <iostream>
 #include <array>
 #include "BufferedReader.h"
-#include "../lib/huffman.h"
+#include "../../lib/include/huffman/huffman.h"
 #include "BufferedWriter.h"
 
 
@@ -51,29 +51,15 @@ void decode(BufferedReader &reader, BufferedWriter &writer) {
     std::array<Code, 256> codes;
     decode_dict(reader, codes);
     Huffman haffman(codes);
-    haffman.start();
-    uint8_t cur = reader.read_char();
 
+    uint8_t cur = reader.read_char();
     while (!reader.empty()) {
         uint8_t nxt = reader.read_char();
         size_t cnt = 8;
         if (reader.empty()) {
             cnt = nxt;
         }
-
-        for (size_t i = 0; i < cnt; i++) {
-            auto b = static_cast<bool>(cur & (1 << (8 - i - 1)));
-            haffman.go(b);
-
-            if (haffman.get_cur_node() == nullptr) {
-                throw std::runtime_error("error");
-            }
-
-            if (haffman.is_ready()) {
-                writer.add_char(haffman.get_char());
-                haffman.start();
-            }
-        }
+        writer.add_vector(haffman.decode(cur, cnt));
         cur = nxt;
     }
     writer.end();
@@ -104,7 +90,6 @@ int main(int args, char *argv[]) {
             }
             reader.reset();
             Huffman haffman(list_of_cnt);
-
             encode(haffman, reader, writer);
         } else {
             decode(reader, writer);
