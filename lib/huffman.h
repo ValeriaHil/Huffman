@@ -8,7 +8,7 @@
 #include "Code.h"
 
 struct Huffman {
-    explicit Huffman(std::array<uint64_t, 256> list_of_cnt);
+    explicit Huffman(std::array<uint64_t, 256> const &list_of_cnt);
 
     explicit Huffman(std::array<Code, 256> const &codes);
 
@@ -19,12 +19,14 @@ private:
         std::shared_ptr<Node> left;
         std::shared_ptr<Node> right;
         uint8_t data;
-        uint64_t cnt;
+        uint64_t cnt = 0;
+
+        Node() : Node(0, 0) {}
 
         Node(uint8_t c, uint64_t cnt) : left(nullptr), right(nullptr), data(c), cnt(cnt) {}
 
-        Node(uint8_t cnt, std::shared_ptr<Node> l, std::shared_ptr<Node> r) : left(std::move(l)), right(std::move(r)),
-                                                                              cnt(cnt) {}
+        Node(uint64_t cnt, std::shared_ptr<Node> const &l, std::shared_ptr<Node> const &r) : left(l), right(r),
+                                                                              data(0), cnt(cnt) {}
 
         inline bool is_leaf() {
             return left == right && left == nullptr;

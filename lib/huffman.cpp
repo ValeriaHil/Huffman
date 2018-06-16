@@ -2,12 +2,12 @@
 #include <iostream>
 #include "huffman.h"
 
-Huffman::Huffman(std::array<uint64_t, 256> list_of_cnt) {
+Huffman::Huffman(std::array<uint64_t, 256> const &list_of_cnt) {
     for (size_t i = 0; i < 256; i++) {
         if (list_of_cnt[i] == 0) {
             continue;
         }
-        auto x = std::make_shared<Node>(i, list_of_cnt[i]);
+        auto x = std::shared_ptr<Node> (new Node(static_cast<uint8_t>(i), list_of_cnt[i]));
         q.push(x);
     }
     build_tree();
@@ -24,10 +24,11 @@ void Huffman::build_tree() {
         auto r = q.top();
         q.pop();
 
-        auto v = std::make_shared<Node>(l->cnt + r->cnt, l, r);
+        auto v = std::shared_ptr<Node>(new Node(l->cnt + r->cnt, l, r));
         q.push(v);
     }
     root = q.top();
+    q.pop();
     Code code;
     get_codes(root, code);
 }

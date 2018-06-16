@@ -31,6 +31,7 @@ void BufferedWriter::add_char(uint8_t x) {
     if (cur_size == BUFFER_SIZE) {
         write_buffer();
     }
+//    buff[cur_size++] = x;
     if (rest == 0) {
         buff[cur_size++] = x;
     } else {
