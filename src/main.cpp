@@ -13,7 +13,7 @@ using namespace std;
 
 void write_dict(Huffman &haffman, BufferedWriter &writer) {
     for (size_t i = 0; i < 256; i++) {
-        Code code = haffman.encode(static_cast<const uint8_t &>(i));
+        Code &code = haffman.encode(static_cast<const uint8_t &>(i));
         auto const &data = code.get_data();
         writer.add_short(static_cast<uint16_t>(data.size()));
         if (!data.empty()) {
@@ -27,7 +27,7 @@ void encode(Huffman &haffman, BufferedReader &reader, BufferedWriter &writer) {
     write_dict(haffman, writer);
 
     while (!reader.empty()) {
-        Code code = haffman.encode(reader.read_char());
+        Code &code = haffman.encode(reader.read_char());
         writer.add_code(code);
     }
     writer.check_last();
@@ -80,7 +80,7 @@ void decode(BufferedReader &reader, BufferedWriter &writer) {
 }
 
 int main(int args, char *argv[]) {
-    if (args < 3) {
+    if (args < 4) {
         printf("Wrong number of args\n");
         return 0;
     }

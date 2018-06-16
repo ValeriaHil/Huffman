@@ -62,7 +62,7 @@ void BufferedWriter::add_int(uint32_t x) {
 }
 
 void BufferedWriter::add_code(Code const &code) {
-    std::vector<uint32_t> data = code.get_data();
+    std::vector<uint32_t> const &data = code.get_data();
     size_t rest = code.get_rest();
 
     for (size_t i = 0; i + 1 < data.size(); i++) {
