@@ -18,12 +18,12 @@ struct Code {
     bool empty();
     size_t size() const;
     bool get(size_t ind) const;
-    size_t get_rest();
-    std::vector<uint32_t> get_data();
+    size_t get_rest()const;
+    std::vector<uint32_t> get_data() const;
 
 private:
     std::vector<uint32_t> data;
-    size_t rest;
+    size_t rest = 0;
 };
 
 

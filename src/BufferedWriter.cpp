@@ -2,6 +2,7 @@
 // Created by valeriahil on 07.06.18.
 //
 
+#include <iostream>
 #include "BufferedWriter.h"
 
 BufferedWriter::BufferedWriter(std::string const &file) : fout(file, std::ofstream::binary) {}
@@ -30,7 +31,17 @@ void BufferedWriter::add_char(uint8_t x) {
     if (cur_size == BUFFER_SIZE) {
         write_buffer();
     }
-    buff[cur_size++] = x;
+    if (rest == 0) {
+        buff[cur_size++] = x;
+    } else {
+        size_t k = rest;
+        cur_char <<= k;
+        cur_char += (x >> (8 - k));
+        rest = 0;
+        add_char(cur_char);
+        cur_char = static_cast<uint8_t>(x & ((1 << (8 - k)) - 1));
+        rest = k;
+    }
 }
 
 void BufferedWriter::add_short(uint16_t x) {
@@ -50,9 +61,25 @@ void BufferedWriter::add_int(uint32_t x) {
 }
 
 void BufferedWriter::add_code(Code const &code) {
-    for (size_t i = 0; i < code.size(); i++) {
-        add_bit(code.get(i));
+    std::vector<uint32_t> data = code.get_data();
+    size_t rest = code.get_rest();
+
+    for (size_t i = 0; i + 1 < data.size(); i++) {
+        add_int(data[i]);
     }
+    size_t size = 32 - rest;
+    while (size >= 8) {
+        add_char(static_cast<uint8_t>(data.back() >> (size - 8)));
+        data.back() &= ((1 << (size - 8)) - 1);
+        size -= 8;
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        add_bit(static_cast<bool>(data.back() & (1 << (size - i - 1))));
+    }
+//    for (size_t i = 0; i < code.size(); i++) {
+//        add_bit(code.get(i));
+//    }
 }
 
 void BufferedWriter::check_last() {

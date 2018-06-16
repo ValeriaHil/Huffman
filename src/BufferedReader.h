@@ -23,6 +23,9 @@ private:
     size_t cur_size = 0;
     char buff[BUFFER_SIZE];
 
+    uint64_t cur_buf = 0;
+    size_t cur_buf_size = 0;
+
     void read_buffer();
 };
 

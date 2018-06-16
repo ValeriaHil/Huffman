@@ -84,19 +84,8 @@ Huffman::Huffman(std::array<Code, 256> const &codes) {
     }
 }
 
-Code Huffman::encode(const std::vector<uint8_t> &data) {
-    Code code;
-
-    for (auto c : data) {
-        code.add(codes[c]);
-    }
-    return code;
-}
-
-Code Huffman::encode(uint8_t const &x) {
-    Code code;
-    code.add(codes[x]);
-    return code;
+Code &Huffman::encode(uint8_t const &x) {
+    return codes[x];
 }
 
 void Huffman::start() {

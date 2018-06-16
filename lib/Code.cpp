@@ -25,6 +25,10 @@ void Code::pop() {
     }
     data.back() >>= 1;
     rest++;
+    if (rest == 32) {
+        data.pop_back();
+        rest = 0;
+    }
 }
 
 bool Code::empty() {
@@ -51,11 +55,11 @@ void Code::add(Code &code) {
     }
 }
 
-std::vector<uint32_t> Code::get_data() {
+std::vector<uint32_t> Code::get_data()const {
     return data;
 }
 
-size_t Code::get_rest() {
+size_t Code::get_rest()const {
     return rest;
 }
 
