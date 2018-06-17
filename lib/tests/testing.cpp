@@ -17,7 +17,7 @@ void calc_cnt(vector<uint8_t> const &data, array<uint64_t, 256> &list_of_cnt) {
     }
 }
 
-void encode(vector<uint8_t> const &data, vector<uint8_t> &res, Huffman huffman) {
+void enc_and_dec(vector<uint8_t> const &data, vector<uint8_t> &res, Huffman huffman) {
     Code enc = huffman.encode(data);
     for (size_t i = 0; i < enc.char_size(); i++) {
         size_t cnt;
@@ -48,9 +48,10 @@ bool check_vector(vector<uint8_t> const &data, vector<uint8_t> &new_data) {
 
     calc_cnt(data, list_of_cnt);
     Huffman huffman_cnt(list_of_cnt);
-    encode(data, res_cnt, huffman_cnt);
+    enc_and_dec(data, res_cnt, huffman_cnt);
+
     Huffman huffman_codes(huffman_cnt.get_codes());
-    encode(data, res_codes, huffman_codes);
+    enc_and_dec(data, res_codes, huffman_codes);
 
 
     new_data = res_cnt;
