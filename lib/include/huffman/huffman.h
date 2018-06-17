@@ -13,12 +13,14 @@ struct Huffman {
 
     explicit Huffman(std::array<Code, 256> const &codes);
 
+
     Code &encode(uint8_t const &x);
 
     Code encode(std::vector<uint8_t> const &data);
 
     std::vector<uint8_t> decode(char cur, size_t size);
 
+    std::array<Code, 256> &get_codes();
 
 private:
     struct Node {

@@ -145,4 +145,7 @@ std::vector<uint8_t> Huffman::decode(char cur, size_t size) {
     return res;
 }
 
+std::array<Code, 256> &Huffman::get_codes() {
+    return codes;
+};
 

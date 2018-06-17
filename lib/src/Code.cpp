@@ -63,35 +63,37 @@ uint8_t Code::get_char(size_t ind, size_t &char_size) const {
     }
     if (ind == 0) {
         res >>= 24;
-        if (rest > 24) {
-            char_size = 8 - rest - 24;
+        if (rest > 24 && block + 1 == data.size()) {
+            char_size = 8 - (rest - 24);
         }
     }
     if (ind == 1) {
         res >>= 16;
         res &= UINT8_MAX;
-        if (rest > 16) {
-            if (rest > 24) {
-                char_size = 0;
-            } else {
-                char_size = 8 - rest - 16;
+        if (block + 1 == data.size()) {
+            if (rest > 16) {
+                if (rest > 24) {
+                    char_size = 0;
+                } else {
+                    char_size = 8 - (rest - 16);
+                }
             }
         }
     }
     if (ind == 2) {
         res &= UINT16_MAX;
         res >>= 8;
-        if (rest > 8) {
+        if (rest > 8 && block + 1 == data.size()) {
             if (rest > 16) {
                 char_size = 0;
             } else {
-                char_size = 8 - rest - 8;
+                char_size = 8 - (rest - 8);
             }
         }
     }
     if (ind == 3) {
         res &= UINT8_MAX;
-        if (rest) {
+        if (rest && block + 1 == data.size()) {
             if (rest > 8) {
                 char_size = 0;
             } else {
