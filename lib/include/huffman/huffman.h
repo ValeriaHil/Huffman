@@ -15,7 +15,10 @@ struct Huffman {
 
     Code &encode(uint8_t const &x);
 
+    Code encode(std::vector<uint8_t> const &data);
+
     std::vector<uint8_t> decode(char cur, size_t size);
+
 
 private:
     struct Node {

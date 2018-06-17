@@ -89,6 +89,14 @@ Code &Huffman::encode(uint8_t const &x) {
     return codes[x];
 }
 
+Code Huffman::encode(std::vector<uint8_t> const &data) {
+    Code code;
+    for (auto x : data) {
+        code.add(codes[x]);
+    }
+    return code;
+}
+
 void Huffman::start() {
     cur_node = root;
 
@@ -116,6 +124,9 @@ std::shared_ptr<Huffman::Node> Huffman::get_cur_node() {
 
 std::vector<uint8_t> Huffman::decode(char cur, size_t size) {
     std::vector<uint8_t> res;
+    if (cur_node == nullptr) {
+        cur_node = root;
+    }
 
     for (size_t i = 0; i < size; i++) {
         auto b = static_cast<bool>(cur & (1 << (8 - i - 1)));
@@ -133,4 +144,5 @@ std::vector<uint8_t> Huffman::decode(char cur, size_t size) {
     }
     return res;
 }
+
 

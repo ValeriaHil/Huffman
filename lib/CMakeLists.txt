@@ -7,6 +7,7 @@ target_include_directories(libhuffman
        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_executable(testlib
+        tests/testing.cpp
         tests/gtest/gtest-all.cc
         tests/gtest/gtest_main.cc)
 

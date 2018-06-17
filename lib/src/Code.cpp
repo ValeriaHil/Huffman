@@ -31,12 +31,16 @@ void Code::pop() {
     }
 }
 
-bool Code::empty() {
+bool Code::empty() const {
     return data.empty();
 }
 
 size_t Code::size() const {
     return 32 * data.size() - rest;
+}
+
+size_t Code::char_size() const {
+    return 4 * data.size();
 }
 
 bool Code::get(size_t ind) const {
@@ -49,18 +53,68 @@ bool Code::get(size_t ind) const {
     }
 }
 
+uint8_t Code::get_char(size_t ind, size_t &char_size) const {
+    size_t block = ind / 4;
+    ind %= 4;
+    uint32_t res = (data[block]);
+    char_size = 8;
+    if (block + 1 == data.size()) {
+        res <<= rest;
+    }
+    if (ind == 0) {
+        res >>= 24;
+        if (rest > 24) {
+            char_size = 8 - rest - 24;
+        }
+    }
+    if (ind == 1) {
+        res >>= 16;
+        res &= UINT8_MAX;
+        if (rest > 16) {
+            if (rest > 24) {
+                char_size = 0;
+            } else {
+                char_size = 8 - rest - 16;
+            }
+        }
+    }
+    if (ind == 2) {
+        res &= UINT16_MAX;
+        res >>= 8;
+        if (rest > 8) {
+            if (rest > 16) {
+                char_size = 0;
+            } else {
+                char_size = 8 - rest - 8;
+            }
+        }
+    }
+    if (ind == 3) {
+        res &= UINT8_MAX;
+        if (rest) {
+            if (rest > 8) {
+                char_size = 0;
+            } else {
+                char_size = 8 - rest;
+            }
+        }
+    }
+
+    return static_cast<uint8_t>(res);
+}
+
 void Code::add(Code &code) {
     for (size_t i = 0; i < code.size(); i++) {
         add(code.get(i));
     }
 }
 
-std::vector<uint32_t> const & Code::get_data()const {
+std::vector<uint32_t> const &Code::get_data() const {
     return data;
 }
 
-size_t Code::get_rest()const {
+size_t Code::get_rest() const {
     return rest;
 }
 
-Code::Code(std::vector<uint32_t> const &data, size_t const &rest) : data(data), rest(rest){}
+Code::Code(std::vector<uint32_t> const &data, size_t const &rest) : data(data), rest(rest) {}

@@ -15,9 +15,11 @@ struct Code {
     void add(bool b);
     void add(Code& code);
     void pop();
-    bool empty();
+    bool empty() const;
     size_t size() const;
+    size_t char_size() const;
     bool get(size_t ind) const;
+    uint8_t get_char(size_t ind, size_t &char_size) const;
     size_t get_rest()const;
     std::vector<uint32_t> const &get_data() const;
 
